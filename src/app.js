@@ -6,9 +6,14 @@ app.use(express.json());
 
 // Importar rotas
 const eventoRoutes = require("./routes/eventoRoutes");
+const participanteRoutes = require("./routes/participanteRoutes");
+const inscricaoRoutes = require("./routes/inscricaoRoutes");
 
 // Usar rotas com prefixo
 app.use("/eventos", eventoRoutes);
+app.use("/participantes", participanteRoutes);
+app.use("/inscricoes", inscricaoRoutes);
+
 
 // Rota raiz (informativa)
 app.get("/", (req, res) => {
@@ -20,11 +25,6 @@ app.get("/", (req, res) => {
     });
 });
 
-
-
-const participanteRoutes = require("./routes/participanteRoutes");
-
-app.use("/participantes", participanteRoutes);
 
 app.get("/", (req, res) => {
     res.json({
