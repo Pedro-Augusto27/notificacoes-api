@@ -3,13 +3,15 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "start": "node src/server.js"
+    "start": "node src/server.js --watch"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "description": "",
   "dependencies": {
-    "express": "^5.2.1"
+    "express": "^5.2.1",
+    "swagger-jsdoc": "^6.2.8",
+    "swagger-ui-express": "^5.0.1"
   }
 }

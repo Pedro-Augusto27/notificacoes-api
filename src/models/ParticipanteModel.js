@@ -1,7 +1,7 @@
 let participantes = [
     { id: 1, nome: "Ana Silva", email: "ana@email.com" },
     { id: 2, nome: "Carlos Souza", email: "carlos@email.com" },
-    { id: 3, nome: "Maria Santos", enail: "maria@email.com" },
+    { id: 3, nome: "Maria Santos", email: "maria@email.com" },
 ];
 
 
