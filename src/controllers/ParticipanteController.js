@@ -1,59 +1,80 @@
 const ParticipanteModel = require("../models/ParticipanteModel");
+const AppError = require("../errors/AppError");
 
 // Get
-function index(req, res) {
-    const participantes = ParticipanteModel.listarTodos();
-    res.json(participantes);
+function index(req, res, next) {
+    try {
+        const participantes = ParticipanteModel.listarTodos();
+        res.json(participantes);
+    } catch (err) {
+        next(err);
+    }
 }
 
 // Get
-function show(req, res) {
-    const id = parseInt(req.params.id);
-    const participante = ParticipanteModel.buscarPorId(id);
+function show(req, res, next) {
+    try {
+        const id = parseInt(req.params.id);
+        const participante = ParticipanteModel.buscarPorId(id);
 
-    if (!participante) {
-        return res.status(404).json({ erro: 'Participante não encontrado' });
+        if (!participante) {
+            throw new AppError("Participante não encontrado", 404);
+        }
+
+        res.json(participante);
+    } catch (err) {
+        next(err);
     }
-
-    res.json(participante);
 }
 
 // Post
-function store(req, res) {
-    const { nome, email } = req.body;
+function store(req, res, next) {
+    try {
+        const { nome, email } = req.body;
 
-    if (!nome || !email) {
-        return res.status(400).json({ erro: "Nome e email são obrigatórios" });
+        if (!nome || !email) {
+            throw new AppError("Nome e email são obrigatórios", 400);
+        }
+
+        const novoParticipante = ParticipanteModel.criar({
+            nome,
+            email,
+        });
+        res.status(201).json(novoParticipante);
+    } catch (err) {
+        next(err);
     }
-
-    const novoParticipante = ParticipanteModel.criar({
-        nome,
-        email,
-    });
-    res.status(201).json(novoParticipante);
 }
 
 // Put
-function update(req, res) {
-    const id = parseInt(req.params.id);
-    const participanteAtualizado = ParticipanteModel.atualizar(id, req.body);
+function update(req, res, next) {
+    try {
+        const id = parseInt(req.params.id);
+        const participanteAtualizado = ParticipanteModel.atualizar(id, req.body);
 
-    if (!participanteAtualizado) {
-        return res.status(404).json({ erro: "Participante não encontrado" });
+        if (!participanteAtualizado) {
+            throw new AppError("Participante não encontrado", 404);
+        }
+
+        res.json(participanteAtualizado);
+    } catch (err) {
+        next(err);
     }
-
-    res.json(participanteAtualizado);
 }
 
-function destroy(req, res) {
-    const id = parseInt(req.params.id);
-    const deletado = ParticipanteModel.deletar(id);
+function destroy(req, res, next) {
+    try {
+        const id = parseInt(req.params.id);
+        const deletado = ParticipanteModel.deletar(id);
 
-    if (!deletado) {
-        return res.status(404).json({ erro: "Partipante não encontrado" });
+        if (!deletado) {
+            throw new AppError("Participante não encontrado", 404);
+        }
+
+        res.status(204).send();
+    } catch (err) {
+        next(err);
     }
-
-    res.status(204).send();
 }
 
 module.exports = {
