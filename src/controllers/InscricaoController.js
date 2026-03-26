@@ -1,5 +1,5 @@
 const InscricaoModel = require("../models/InscricaoModel");
-const AppError = require("../errors/AppError");
+const { AppError, NotFoundError, ValidationError } = require("../errors/AppError");
 
 // POST /inscricoes — criar uma inscrição
 function store(req, res, next) {
@@ -7,7 +7,7 @@ function store(req, res, next) {
         const { eventoId, participanteId } = req.body;
 
         if (!eventoId || !participanteId) {
-            throw new AppError("eventoId e participanteId são obrigatórios", 400);
+            throw new ValidationError("eventoId e participanteId são obrigatórios");
         }
 
         const resultado = InscricaoModel.criar(
@@ -16,7 +16,7 @@ function store(req, res, next) {
         );
 
         if (resultado.erro) {
-            throw new AppError(resultado.erro, 400);
+            throw new ValidationError(resultado.erro);
         }
 
         res.status(201).json(resultado);
@@ -53,7 +53,7 @@ function cancelar(req, res, next) {
         const resultado = InscricaoModel.cancelar(id);
 
         if (!resultado) {
-            throw new AppError("Inscrição não encontrada", 404);
+            throw new NotFoundError("Inscrição");
         }
 
         res.json(resultado);

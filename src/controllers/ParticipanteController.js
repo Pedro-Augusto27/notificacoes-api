@@ -1,5 +1,5 @@
 const ParticipanteModel = require("../models/ParticipanteModel");
-const AppError = require("../errors/AppError");
+const { AppError, NotFoundError, ValidationError } = require("../errors/AppError");
 
 // Get
 function index(req, res, next) {
@@ -18,7 +18,7 @@ function show(req, res, next) {
         const participante = ParticipanteModel.buscarPorId(id);
 
         if (!participante) {
-            throw new AppError("Participante não encontrado", 404);
+            throw new NotFoundError("Participante");
         }
 
         res.json(participante);
@@ -33,7 +33,7 @@ function store(req, res, next) {
         const { nome, email } = req.body;
 
         if (!nome || !email) {
-            throw new AppError("Nome e email são obrigatórios", 400);
+            throw new ValidationError("Nome e email são obrigatórios");
         }
 
         const novoParticipante = ParticipanteModel.criar({
@@ -53,7 +53,7 @@ function update(req, res, next) {
         const participanteAtualizado = ParticipanteModel.atualizar(id, req.body);
 
         if (!participanteAtualizado) {
-            throw new AppError("Participante não encontrado", 404);
+            throw new NotFoundError("Participante");
         }
 
         res.json(participanteAtualizado);
@@ -68,7 +68,7 @@ function destroy(req, res, next) {
         const deletado = ParticipanteModel.deletar(id);
 
         if (!deletado) {
-            throw new AppError("Participante não encontrado", 404);
+            throw new NotFoundError("Participante");
         }
 
         res.status(204).send();

@@ -1,11 +1,21 @@
+// src/errors/AppError.js
 class AppError extends Error {
-    constructor(message, statusCode = 500) {
-        super(message);
-        this.name = this.constructor.name;
+    constructor(mensagem, statusCode) {
+        super(mensagem);
         this.statusCode = statusCode;
-        this.isOperational = true;
-        Error.captureStackTrace(this, this.constructor);
+        this.name = "AppError";
     }
 }
-
-module.exports = AppError;
+class NotFoundError extends AppError {
+    constructor(recurso = "Recurso") {
+        super(`${recurso} não encontrado(a)`, 404);
+        this.name = "NotFoundError";
+    }
+}
+class ValidationError extends AppError {
+    constructor(mensagem) {
+        super(mensagem, 400);
+        this.name = "ValidationError";
+    }
+}
+module.exports = { AppError, NotFoundError, ValidationError };

@@ -1,5 +1,5 @@
 const EventoModel = require("../models/EventoModel");
-const AppError = require("../errors/AppError");
+const { AppError, NotFoundError, ValidationError } = require("../errors/AppError");
 
 // GET - /eventos - listar todos
 function index(req, res, next) {
@@ -17,8 +17,10 @@ function show(req, res, next) {
         const id = parseInt(req.params.id);
         const evento = EventoModel.buscarPorId(id);
 
-        if (!evento) throw new AppError("Evento não encontrado", 404);
-
+        if (!evento) {
+            throw new NotFoundError("Evento");
+        }
+        
         res.json(evento);
     } catch (err) {
         next(err);
@@ -31,7 +33,7 @@ function store(req, res, next) {
         const { nome, descricao, data, local, capacidade } = req.body;
 
         if (!nome || !data) {
-            throw new AppError("Nome e data são obrigatórios", 400);
+            throw new ValidationError("Nome e data são obrigatórios");
         }
 
         const novoEvento = EventoModel.criar({
@@ -55,7 +57,7 @@ function update(req, res, next) {
         const eventoAtualizado = EventoModel.atualizar(id, req.body);
 
         if (!eventoAtualizado) {
-            throw new AppError("Evento não encontrado", 404);
+            throw new NotFoundError("Evento");
         }
 
         res.json(eventoAtualizado);
@@ -71,7 +73,7 @@ function destroy(req, res, next) {
         const deletado = EventoModel.deletar(id);
 
         if (!deletado) {
-            throw new AppError("Evento não encontrado", 404);
+            throw new NotFoundError("Evento");
         }
 
         res.status(204).send();
