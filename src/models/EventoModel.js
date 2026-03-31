@@ -47,6 +47,7 @@ function criar(dados) {
     };
     proximoId++;
     eventos.push(novoEvento);
+    return novoEvento;
 }
 
 

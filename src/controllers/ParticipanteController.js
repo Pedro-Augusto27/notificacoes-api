@@ -1,5 +1,6 @@
 const ParticipanteModel = require("../models/ParticipanteModel");
 const { AppError, NotFoundError, ValidationError } = require("../errors/AppError");
+const { isRequired, minLength, isEmail, validar } = require("../helpers/validators");
 
 // Get
 function index(req, res, next) {
@@ -32,8 +33,15 @@ function store(req, res, next) {
     try {
         const { nome, email } = req.body;
 
-        if (!nome || !email) {
-            throw new ValidationError("Nome e email são obrigatórios");
+        const erros = validar([
+            isRequired(nome, "Nome"),
+            minLength(nome, 2, "Nome"),
+            isRequired(email, "Email"),
+            isEmail(email)
+        ]);
+
+        if (erros) {
+            throw new ValidationError(erros.join("; "));
         }
 
         const novoParticipante = ParticipanteModel.criar({

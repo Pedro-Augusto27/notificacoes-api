@@ -68,3 +68,25 @@ module.exports = {
     listarPorEvento,
     cancelar,
 };
+
+function store(req, res, next) {
+    try {
+        const { eventoId, participanteId } = req.body;
+        const erros = validar([
+            // eventoId é obrigatório
+            !eventoId && "eventoId é obrigatório",
+            // participanteId é obrigatório
+            !participanteId && "participanteId é obrigatório",
+        ]);
+        if (erros) {
+            throw new ValidationError(erros.join("; "));
+        }
+        const resultado = InscricaoModel.criar(
+            parseInt(eventoId),
+            parseInt(participanteId),
+        );
+        res.status(201).json(resultado);
+    } catch (erro) {
+        next(erro);
+    }
+}
